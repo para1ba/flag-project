@@ -24,7 +24,7 @@ class Flag():
             print("- RETÂNGULO INVÁLIDO -")
 
     def fillPolygon(self, reference_dot, color_rgb):
-        pass
+        cv2.fillPoly(self.image, reference_dot, color_rgb)
     
     def showFlag(self):
         cv2.imshow('Flag', self.image)
