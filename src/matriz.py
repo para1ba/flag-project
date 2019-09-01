@@ -1,15 +1,24 @@
 import cv2
 import numpy as np
 import math
+import numpy as np
 
-def matrizEscala(x,y):
-    matriz = np.array([[x, 0, 0], [0, y, 0], [0, 0, 1]])
-    return matriz
+def matriz_escala(x_scale, y_scale):
+    return np.array([[x_scale, 0, 0], 
+                     [0, y_scale, 0], 
+                     [0, 0, 1]])
 
-def matrizRotacao(ang):
-    matriz = np.array([[math.cos(ang), math.sin(ang), 0], [-math.sin(ang), math.cos(ang), 0], [0, 0, 1]])
-    return matriz
+def matriz_rotacao(degrees):
+    return np.array([[math.cos(degrees), -math.sin(degrees), 0], 
+                     [math.sin(degrees), math.cos(degrees), 0], 
+                     [0, 0, 1]])
 
-def matrizTranslacao(x,y):
-    matriz = np.array([[1, 0, 0], [0, 1, 0],[x, y, 1]])
-    return matriz
+def matriz_translacao(x_factor, y_factor):
+    return np.array([[1, 0, x_factor], 
+                     [0, 1, y_factor],
+                     [0, 0, 1]])
+
+def apply_transformation(x, y, matrix):
+    a = np.array([[x], [y], [1]])
+    b = np.matmul(matrix, a)
+    return b

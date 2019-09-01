@@ -1,8 +1,8 @@
 import forms as formas
 import cv2
 import numpy as np
-import matriz as mat
-
+import math
+import matriz as matriz
 
 class Flag():
     def __init__(self, width, height, background_color):
@@ -11,8 +11,6 @@ class Flag():
         self.image = np.zeros((height, width, 3), np.uint8)
         pts = np.array([[0,0], [width, 0], [width, height], [0, height]], np.int32)
         cv2.fillPoly(self.image, [pts], background_color)
-        escal = mat.matrizEscala(5, 5)
-        self.image = mat.multiplicacao(self.image, escal)
     
     def drawTriangle(self, dots, color_rgb):
         if(len(dots) == 3):
@@ -34,34 +32,56 @@ class Flag():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    def escala(self, timesX, timesY):
-        height = self.image.shape[0]
-        width = self.image.shape[1]
+    def scale(self, timesX, timesY):
+        newImage = self.large_image(timesX, timesY)
+        tr = matriz.matriz_escala(timesX, timesY)
+        for i in range(self.width):
+            for j in range(self.height):
+                vlr = matriz.apply_transformation(i, j, tr)
+                newImage[vlr[1], vlr[0]] = self.image[j, i]
+        self.image = newImage
+        self.width = self.image.shape[1]
+        self.height = self.image.shape[0]
 
-        newImage = np.zeros((timesY*height, timesY*width, 3), np.uint8)
-        pts = np.array([[0,0], [timesX*width, 0], [timesX*width, timesY*height], [0, timesY*height]], np.int32)
-        cv2.fillPoly(newImage, [pts], (255 ,255 ,255))
-
-        for i in range(width):
-            for j in range(height):
-                pix = self.image[j, i]
-                y = j*int(timesY)
-                x = i*int(timesX)
-                if(x < newImage.shape[1] and y < newImage.shape[0]):
-                    newImage[y, x] = pix
+    def translation(self, x, y):
+        newImage = self.black_copy()
+        tr = matriz.matriz_translacao(x, y)
+        for i in range(self.width):
+            for j in range(self.height):
+                vlr = matriz.apply_transformation(i, j, tr)
+                if(vlr[1] < self.height and vlr[0] < self.width):
+                    newImage[vlr[1], vlr[0]] = self.image[j, i]
         self.image = newImage
 
-    def transl(self, x, y):
-        width = self.image.shape[0]
-        height = self.image.shape[1]
+    def large_image(self, timesX, timesY):
+        resp = np.zeros((self.height*timesY, self.width*timesX, 3), np.uint8)
+        pts = np.array([[0,0], [self.width*timesX, 0], [self.width*timesX, self.height*timesY], [0, self.height*timesY]], np.int32)
+        cv2.fillPoly(resp, [pts], (0, 0, 0))
 
-        newImage = np.zeros((width, height, 3), np.uint8)
-        pts = np.array([[0,0], [width, 0], [width, height], [0, height]], np.int32)
-        cv2.fillPoly(newImage, [pts], (0, 0, 0))
+        return resp
 
-        for i in range(width):
-            for j in range(height):
-                pixel = self.image[i, j]
-                if((i+y) < width and (j+x) < height):
-                    newImage[i+y, j+x] = pixel
-        self.image = newImage
+    def black_copy(self):
+        resp = np.zeros((self.height, self.width, 3), np.uint8)
+        pts = np.array([[0,0], [self.width, 0], [self.width, self.height], [0, self.height]], np.int32)
+        cv2.fillPoly(resp, [pts], (0, 0, 0))
+
+        return resp
+
+    def blank_copy(self):
+        resp = np.zeros((self.height, self.width, 3), np.uint8)
+        pts = np.array([[0,0], [self.width, 0], [self.width, self.height], [0, self.height]], np.int32)
+        cv2.fillPoly(resp, [pts], (255, 255, 255))
+
+        return resp
+
+    def rotate(self, degrees):
+        aux_image = self.blank_copy()
+        for i in range(self.width):
+            for j in range(self.height):
+                pixel = self.image[j, i]
+                new_x = abs(math.trunc(math.cos(degrees) * i) + math.trunc(math.sin(degrees) * j))
+                new_y = abs(math.trunc(-math.sin(degrees) * i) + math.trunc(math.cos(degrees) * j))
+                #print(new_x, new_y)
+                if(new_x < self.width and new_x > 0 and new_y < self.height and new_y > 0):
+                    aux_image[new_y, new_x] = pixel
+        self.image = aux_image
