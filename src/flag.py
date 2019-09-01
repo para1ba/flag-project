@@ -32,19 +32,20 @@ class Flag():
         cv2.destroyAllWindows()
 
     def escala(self, timesX, timesY):
-        width = self.image.shape[0]
-        height = self.image.shape[1]
+        height = self.image.shape[0]
+        width = self.image.shape[1]
 
-        newImage = np.zeros((timesY*height, timesX*width, 3), np.uint8)
-        pts = np.array([[0,0], [timesY*width, 0], [timesY*width, timesX*height], [0, timesX*height]], np.int32)
+        newImage = np.zeros((timesY*height, timesY*width, 3), np.uint8)
+        pts = np.array([[0,0], [timesX*width, 0], [timesX*width, timesY*height], [0, timesY*height]], np.int32)
         cv2.fillPoly(newImage, [pts], (255 ,255 ,255))
 
-        for i in range(self.image.shape[0]):
-            for j in range(self.image.shape[1]):
-                pix = self.image[i][j]
-                x = i*timesY
-                y = j*timesX
-                newImage[x][y] = self.image[i][j]
+        for i in range(width):
+            for j in range(height):
+                pix = self.image[j, i]
+                y = j*int(timesY)
+                x = i*int(timesX)
+                if(x < newImage.shape[1] and y < newImage.shape[0]):
+                    newImage[y, x] = pix
         self.image = newImage
 
     def transl(self, x, y):
