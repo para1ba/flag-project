@@ -17,12 +17,6 @@ class Flag():
             formas.drawPolygon(self.image, dots, color_rgb)
         else:
             print("- TRIÂNGULO INVÁLIDO -")
-    
-    def drawRectangle(self, dots, color_rgb):
-        if(len(dots) == 4):
-            formas.drawPolygon(self, dots, color_rgb)
-        else:
-            print("- RETÂNGULO INVÁLIDO -")
 
     def fillPolygon(self, reference_dot, color_rgb):
         cv2.fillPoly(self.image, reference_dot, color_rgb)
@@ -75,13 +69,12 @@ class Flag():
         return resp
 
     def rotate(self, degrees):
-        aux_image = self.blank_copy()
+        newImage = self.black_copy()
+        tr = matriz.matriz_rotacao(degrees)
         for i in range(self.width):
             for j in range(self.height):
-                pixel = self.image[j, i]
-                new_x = abs(math.trunc(math.cos(degrees) * i) + math.trunc(math.sin(degrees) * j))
-                new_y = abs(math.trunc(-math.sin(degrees) * i) + math.trunc(math.cos(degrees) * j))
-                #print(new_x, new_y)
-                if(new_x < self.width and new_x > 0 and new_y < self.height and new_y > 0):
-                    aux_image[new_y, new_x] = pixel
-        self.image = aux_image
+                vlr = matriz.apply_transformation(i, j, tr)
+                if(vlr[1] < self.height and vlr[0] < self.width and vlr[1] > 0 and vlr[0] > 0):
+                    newImage[int(vlr[1]), int(vlr[0])] = self.image[j, i]
+        self.image = newImage
+

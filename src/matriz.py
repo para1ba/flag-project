@@ -21,4 +21,5 @@ def matriz_translacao(x_factor, y_factor):
 def apply_transformation(x, y, matrix):
     a = np.array([[x], [y], [1]])
     b = np.matmul(matrix, a)
-    return b
+
+    return b.flatten().tolist()
