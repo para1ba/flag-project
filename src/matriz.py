@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 import math
 import numpy as np
 
@@ -20,8 +21,4 @@ def matriz_translacao(x_factor, y_factor):
 def apply_transformation(x, y, matrix):
     a = np.array([[x], [y], [1]])
     b = np.matmul(matrix, a)
-    print(a)
-    print("#####")
-    print(b)
-
-    #return resp[0], resp[1]
+    return b
