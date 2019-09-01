@@ -1,6 +1,7 @@
 import forms as formas
 import cv2
 import numpy as np
+import matriz as mat
 
 
 class Flag():
@@ -10,6 +11,8 @@ class Flag():
         self.image = np.zeros((height, width, 3), np.uint8)
         pts = np.array([[0,0], [width, 0], [width, height], [0, height]], np.int32)
         cv2.fillPoly(self.image, [pts], background_color)
+        escal = mat.matrizEscala(5, 5)
+        self.image = mat.multiplicacao(self.image, escal)
     
     def drawTriangle(self, dots, color_rgb):
         if(len(dots) == 3):
