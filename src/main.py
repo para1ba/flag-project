@@ -19,7 +19,9 @@ santa_lucia.drawTriangle([(600, 337), (915, 665), (285, 665)], (0, 210, 255))
 ponto_interno = np.array([[600, 337], [915, 665], [285, 665]], np.int32)
 santa_lucia.fillPolygon([ponto_interno], (0, 210, 255)) #>> EXEMPLO PRA PREENCHER
 
-santa_lucia.escala(5, 5) #>> ESCALA DANDO ERRO - N SEI PQ
+#santa_lucia.escala(5, 5) #>> ESCALA DANDO ERRO - N SEI PQ
 # santa_lucia.transl(30, 300)
+
+santa_lucia.rotate(-15)
 
 santa_lucia.showFlag()
