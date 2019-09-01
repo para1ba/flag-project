@@ -8,8 +8,8 @@ def matriz_escala(x_scale, y_scale):
                      [0, 0, 1]])
 
 def matriz_rotacao(degrees):
-    return np.array([[math.cos(degrees), -math.sin(degrees), 0], 
-                     [math.sin(degrees), math.cos(degrees), 0], 
+    return np.array([[math.cos(math.radians(degrees)), math.sin(math.radians(degrees)), 0], 
+                     [-math.sin(math.radians(degrees)), math.cos(math.radians(degrees)), 0], 
                      [0, 0, 1]])
 
 def matriz_translacao(x_factor, y_factor):
