@@ -19,7 +19,10 @@ class Flag():
             print("- TRIÂNGULO INVÁLIDO -")
 
     def fillPolygon(self, reference_dot, color_rgb):
-        cv2.fillPoly(self.image, reference_dot, color_rgb)
+        mask = np.zeros((self.height+2, self.width+2), np.uint8)
+        mask[:] = 0
+        flags = 4
+        cv2.floodFill(self.image, mask, reference_dot, color_rgb, flags)
     
     def showFlag(self):
         cv2.imshow('Flag', self.image)
