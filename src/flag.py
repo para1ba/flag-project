@@ -9,8 +9,10 @@ class Flag():
         self.width = width
         self.height = height
         self.image = np.zeros((height, width, 3), np.uint8)
-        pts = np.array([[0,0], [width, 0], [width, height], [0, height]], np.int32)
-        cv2.fillPoly(self.image, [pts], background_color)
+        mask = np.zeros((height+2, width+2), np.uint8)
+        mask[:] = 0
+        flags = 4
+        cv2.floodFill(self.image, mask, (1,1), background_color, flags)
     
     def drawTriangle(self, dots, color_rgb):
         if(len(dots) == 3):
